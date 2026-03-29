@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Battle Royale - Kids Arcade</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .nav-link {
+            position: fixed;
+            z-index: 99999;
+            color: #fff;
+            background: rgba(0,0,0,0.6);
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: sans-serif;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .nav-link:hover { background: rgba(0,0,0,0.85); }
+        .back-link { top: 10px; left: 10px; }
+        .help-btn { top: 10px; right: 10px; cursor: pointer; }
+
+        .help-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 100000;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            font-family: sans-serif;
+        }
+        .help-overlay.open { display: flex; }
+        .help-box {
+            background: #1a1a2e;
+            border: 2px solid #e74c3c;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 420px;
+            width: 90%;
+            color: #fff;
+            position: relative;
+        }
+        .help-box h2 { color: #e74c3c; margin-bottom: 1rem; font-size: 1.3rem; }
+        .help-box ul { list-style: none; padding: 0; }
+        .help-box li { padding: 0.4rem 0; font-size: 0.95rem; color: #ddd; }
+        .help-box li strong { color: #f1c40f; }
+        .help-box .goal { margin-top: 1rem; padding-top: 0.8rem; border-top: 1px solid #333; color: #2ecc71; font-size: 0.95rem; }
+        .help-close {
+            position: absolute;
+            top: 10px;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #e74c3c;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <a href="/" class="nav-link back-link">&larr; Kids Arcade</a>
+    <span class="nav-link help-btn" onclick="document.getElementById('helpOverlay').classList.add('open')">? How to Play</span>
+
+    <div id="helpOverlay" class="help-overlay" onclick="if(event.target===this)this.classList.remove('open')">
+        <div class="help-box">
+            <button class="help-close" onclick="document.getElementById('helpOverlay').classList.remove('open')">&times;</button>
+            <h2>How to Play</h2>
+            <ul>
+                <li><strong>WASD</strong> &mdash; Move</li>
+                <li><strong>Mouse</strong> &mdash; Aim</li>
+                <li><strong>Left Click</strong> &mdash; Shoot</li>
+                <li><strong>1-4 Keys</strong> &mdash; Switch weapons</li>
+                <li><strong>Walk over items</strong> &mdash; Pick up weapons &amp; health</li>
+            </ul>
+            <p class="goal">Be the last one standing! Avoid the shrinking storm and eliminate 15 bots to win.</p>
+        </div>
+    </div>
+
+    <div id="game-container"></div>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.86.0/dist/phaser.min.js"></script>
+    <script type="module" src="js/main.js"></script>
+</body>
+</html>

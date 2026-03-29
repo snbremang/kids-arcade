@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kids Arcade - Fun Games for Kids!</title>
+    <meta name="description" content="Play free browser games! Battle Royale and Hide & Seek - fun arcade games for kids.">
+    <meta property="og:title" content="Kids Arcade">
+    <meta property="og:description" content="Free browser games for kids - Battle Royale and Hide & Seek!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kidsarcade.fun">
+    <meta name="theme-color" content="#7b2ff7">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            background-size: 400% 400%;
+            animation: gradientShift 12s ease infinite;
+            color: #fff;
+            overflow-x: hidden;
+            padding: 2rem 1rem;
+            gap: 0;
+        }
+
+        @media (max-width: 700px) {
+            body { justify-content: flex-start; padding-top: 1.5rem; }
+            .card { padding: 1.5rem 1.5rem 1.2rem; }
+            .card-icon { font-size: 2.5rem; margin-bottom: 0.4rem; }
+            .card h2 { font-size: 1.3rem; }
+            .card p { font-size: 0.85rem; margin-bottom: 1rem; }
+            .subtitle { margin-bottom: 1.5rem; }
+            .games { gap: 1rem; }
+            footer { margin-top: 2rem; }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        main {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        h1 {
+            font-size: clamp(2.5rem, 8vw, 4.5rem);
+            font-weight: 900;
+            letter-spacing: 0.08em;
+            margin-bottom: 0.3rem;
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            0% { text-shadow: 0 0 20px #ff6ec7, 0 0 40px #ff6ec7, 0 0 80px #7b2ff7; color: #fff; }
+            100% { text-shadow: 0 0 20px #f1c40f, 0 0 40px #f1c40f, 0 0 80px #e67e22; color: #fffbe6; }
+        }
+
+        .subtitle {
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            color: #bbb;
+            margin-bottom: 2.5rem;
+            font-weight: 300;
+        }
+
+        .games {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            flex: 1 1 280px;
+            max-width: 360px;
+            padding: 2.5rem 2rem 2rem;
+            border-radius: 20px;
+            text-decoration: none;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0);
+            transition: background 0.2s;
+            border-radius: 20px;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 12px 48px rgba(0,0,0,0.5);
+        }
+
+        .card:hover::before {
+            background: rgba(255,255,255,0.06);
+        }
+
+        .card-br {
+            background: linear-gradient(135deg, #e74c3c, #e67e22);
+        }
+
+        .card-hs {
+            background: linear-gradient(135deg, #3498db, #1abc9c);
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .play-btn {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            border-radius: 999px;
+            padding: 0.7rem 2.2rem;
+            font-weight: 700;
+            font-size: 1rem;
+            letter-spacing: 0.1em;
+            transition: background 0.2s;
+        }
+
+        .card:hover .play-btn {
+            background: rgba(255,255,255,0.35);
+        }
+
+        footer {
+            margin-top: 3rem;
+            color: #666;
+            font-size: 0.85rem;
+        }
+
+        @media (max-width: 700px) {
+            .games { flex-direction: column; align-items: center; }
+            .card { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>KIDS ARCADE</h1>
+        <p class="subtitle">Pick a game and start playing!</p>
+        <div class="games">
+            <a href="./battle-royale/" class="card card-br">
+                <div class="card-icon">🎯</div>
+                <h2>Battle Royale</h2>
+                <p>Last one standing wins! Fight 15 bots in a shrinking storm.</p>
+                <span class="play-btn">&#9654; PLAY</span>
+            </a>
+            <a href="./hide-and-seek/" class="card card-hs">
+                <div class="card-icon">🔍</div>
+                <h2>Hide &amp; Seek</h2>
+                <p>Hide from the seeker, collect fruit, and survive!</p>
+                <span class="play-btn">&#9654; PLAY</span>
+            </a>
+        </div>
+    </main>
+    <footer>Made by Jaese NB and Sam NB</footer>
+</body>
+</html>
