@@ -4,8 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Battle Royale - Kids Arcade</title>
-    <link rel="stylesheet" href="css/style.css">
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+        canvas { display: block; }
+
         .nav-link {
             position: fixed;
             z-index: 99999;
@@ -79,7 +89,6 @@
         </div>
     </div>
 
-    <div id="game-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.86.0/dist/phaser.min.js"></script>
     <script type="module" src="js/main.js"></script>
 </body>
