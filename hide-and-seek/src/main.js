@@ -1,3 +1,4 @@
+import { MenuScene } from './scenes/MenuScene.js';
 import { GameScene } from './scenes/GameScene.js';
 import { UIScene } from './scenes/UIScene.js';
 import { EndScene } from './scenes/EndScene.js';
@@ -14,8 +15,7 @@ const config = {
       debug: false,
     }
   },
-  // GameScene starts automatically; UIScene launched from GameScene.create()
-  scene: [GameScene, UIScene, EndScene],
+  scene: [MenuScene, GameScene, UIScene, EndScene],
 };
 
 window._game = new Phaser.Game(config);

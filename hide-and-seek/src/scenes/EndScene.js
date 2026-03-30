@@ -61,6 +61,9 @@ export class EndScene extends Phaser.Scene {
 
     btn.on('pointerover', () => btn.setBackgroundColor('#2980b9'));
     btn.on('pointerout', () => btn.setBackgroundColor('#1a5276'));
-    btn.on('pointerdown', () => this.scene.start('GameScene'));
+    btn.on('pointerdown', () => {
+      this.scene.stop('UIScene');
+      this.scene.start('MenuScene');
+    });
   }
 }
