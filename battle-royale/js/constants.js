@@ -82,13 +82,13 @@ export const WEAPONS = {
         bulletSpeed: 1200,
         bulletLifespan: 1000,
         spread: 0.01,
-        bulletSize: 5
-    }
-};
         bulletsPerShot: 1,
         ammo: 20,
         range: 1200,
         color: 0x9b59b6,
+        bulletSize: 5
+    }
+};
 
 export const STORM = {
     PHASES: [
