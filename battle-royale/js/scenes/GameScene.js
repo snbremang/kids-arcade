@@ -8,6 +8,7 @@ import { LootSpawner } from '../systems/LootSpawner.js';
 import { StormSystem } from '../systems/StormSystem.js';
 import { HUD } from '../ui/HUD.js';
 import { Minimap } from '../ui/Minimap.js';
+import { TouchControls } from '../ui/TouchControls.js';
 import { KillFeed } from '../systems/KillFeed.js';
 
 export class GameScene extends Phaser.Scene {
@@ -29,6 +30,7 @@ export class GameScene extends Phaser.Scene {
         this._aliveCache = null;
         this._aliveCacheFrame = -1;
         this.playerKilledBy = null;
+        this.touchControls = null; // Player reads this; clear any stale ref from a previous run
 
         // Generate map
         this.mapGen = new MapGenerator(this);
@@ -99,6 +101,11 @@ export class GameScene extends Phaser.Scene {
         this.minimap = new Minimap(this);
         this.killFeed = new KillFeed(this);
 
+        // Touch controls (D-pad, fire, swap); replaces the keyboard hint when on
+        this.touchControls = new TouchControls(this);
+        this.hud.controlsText.setVisible(!this.touchControls.enabled);
+        this.touchControls.onChange = (on) => this.hud.controlsText.setVisible(!on);
+
         // Custom crosshair
         this.input.setDefaultCursor('none');
         this.crosshair = this.add.sprite(0, 0, 'crosshair').setDepth(1000);
@@ -129,10 +136,21 @@ export class GameScene extends Phaser.Scene {
 
             // Update crosshair position
             const pointer = this.input.activePointer;
-            this.crosshair.setPosition(
-                pointer.x + this.cameras.main.scrollX,
-                pointer.y + this.cameras.main.scrollY
-            );
+            const tc = this.touchControls;
+            if (tc) tc.update();
+            const touchAim = tc ? tc.getAimAngle() : null;
+            if (touchAim !== null) {
+                // Touch aim: show the crosshair ahead of the player in the aim direction
+                this.crosshair.setPosition(
+                    this.player.x + Math.cos(touchAim) * 90,
+                    this.player.y + Math.sin(touchAim) * 90
+                );
+            } else {
+                this.crosshair.setPosition(
+                    pointer.x + this.cameras.main.scrollX,
+                    pointer.y + this.cameras.main.scrollY
+                );
+            }
 
             // Update player
             this.player.update(time, delta);

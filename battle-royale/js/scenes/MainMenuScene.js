@@ -1,3 +1,5 @@
+import { touchControlsEnabled, setTouchControls } from '../systems/Settings.js';
+
 export class MainMenuScene extends Phaser.Scene {
     constructor() {
         super('MainMenuScene');
@@ -50,12 +52,19 @@ export class MainMenuScene extends Phaser.Scene {
             this.showStats();
         });
 
+        // Touch controls toggle
+        const touchLabel = () => `TOUCH CONTROLS: ${touchControlsEnabled() ? 'ON' : 'OFF'}`;
+        const touchBtn = this.createButton(width / 2, btnStart + btnGap * 4, touchLabel(), () => {
+            setTouchControls(!touchControlsEnabled());
+            touchBtn.setText(touchLabel());
+        }, 14);
+
         // Overlays (hidden by default)
         this.statsContainer = this.add.container(0, 0).setVisible(false);
         this.diffContainer = this.add.container(0, 0).setVisible(false);
     }
 
-    createButton(x, y, text, callback) {
+    createButton(x, y, text, callback, fontSize = 18) {
         const bg = this.add.graphics();
         bg.fillStyle(0x2c3e50, 1);
         bg.fillRoundedRect(x - 100, y - 22, 200, 44, 8);
@@ -63,7 +72,7 @@ export class MainMenuScene extends Phaser.Scene {
         bg.strokeRoundedRect(x - 100, y - 22, 200, 44, 8);
 
         const label = this.add.text(x, y, text, {
-            fontSize: '18px',
+            fontSize: `${fontSize}px`,
             fontFamily: 'Arial',
             color: '#ecf0f1'
         }).setOrigin(0.5);
@@ -89,6 +98,7 @@ export class MainMenuScene extends Phaser.Scene {
         });
 
         hitArea.on('pointerdown', callback);
+        return label;
     }
 
     showDifficultyPicker() {

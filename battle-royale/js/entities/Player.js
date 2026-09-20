@@ -27,6 +27,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         // Mouse input for shooting
         scene.input.on('pointerdown', (pointer) => {
+            if (!this.worldPointerAllowed(pointer)) return;
             if (pointer.leftButtonDown() && this.active) {
                 const worldPoint = scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
                 const angle = Phaser.Math.Angle.Between(this.x, this.y, worldPoint.x, worldPoint.y);
@@ -36,7 +37,9 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         // Hold to fire
         this.isFiring = false;
-        scene.input.on('pointerdown', () => { this.isFiring = true; });
+        scene.input.on('pointerdown', (pointer) => {
+            if (this.worldPointerAllowed(pointer)) this.isFiring = true;
+        });
         scene.input.on('pointerup', () => { this.isFiring = false; });
 
         // Scroll to switch weapons
@@ -45,9 +48,18 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         });
     }
 
+    // With touch controls on, touches and taps on the buttons must not aim/shoot at the tap point.
+    worldPointerAllowed(pointer) {
+        const tc = this.scene.touchControls;
+        if (!tc || !tc.enabled) return true;
+        return !pointer.wasTouch && !tc.hitTest(pointer.x, pointer.y);
+    }
+
     update(time, delta) {
         if (!this.active) return;
         if (!this.body) return;
+
+        const tc = this.scene.touchControls;
 
         // Movement
         let vx = 0, vy = 0;
@@ -55,6 +67,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (this.keys.d.isDown) vx += 1;
         if (this.keys.w.isDown) vy -= 1;
         if (this.keys.s.isDown) vy += 1;
+        if (tc) {
+            const m = tc.getMove();
+            vx = Phaser.Math.Clamp(vx + m.x, -1, 1);
+            vy = Phaser.Math.Clamp(vy + m.y, -1, 1);
+        }
 
         // Normalize diagonal movement
         if (vx !== 0 && vy !== 0) {
@@ -65,10 +82,16 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
 
         this.body.setVelocity(vx * PLAYER.SPEED, vy * PLAYER.SPEED);
 
-        // Rotation: face mouse
+        // Rotation: face touch aim if in use, otherwise the mouse
         const pointer = this.scene.input.activePointer;
-        const worldPoint = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
-        const angle = Phaser.Math.Angle.Between(this.x, this.y, worldPoint.x, worldPoint.y);
+        const touchAim = tc ? tc.getAimAngle() : null;
+        let angle;
+        if (touchAim !== null) {
+            angle = touchAim;
+        } else {
+            const worldPoint = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
+            angle = Phaser.Math.Angle.Between(this.x, this.y, worldPoint.x, worldPoint.y);
+        }
         this.setRotation(angle);
 
         // Weapon switching with number keys
@@ -79,10 +102,12 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (Phaser.Input.Keyboard.JustDown(this.keys.q)) this.weaponSystem.switchWeapon(-1);
         if (Phaser.Input.Keyboard.JustDown(this.keys.e)) this.weaponSystem.switchWeapon(1);
 
-        // Auto-fire while holding mouse
-        if (this.isFiring) {
+        // Auto-fire while holding mouse or the touch FIRE button
+        if (tc && tc.firing) {
+            this.weaponSystem.fire(angle, time);
+        } else if (this.isFiring) {
             const wp = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
-            const a = Phaser.Math.Angle.Between(this.x, this.y, wp.x, wp.y);
+            const a = touchAim !== null ? angle : Phaser.Math.Angle.Between(this.x, this.y, wp.x, wp.y);
             this.weaponSystem.fire(a, time);
         }
     }

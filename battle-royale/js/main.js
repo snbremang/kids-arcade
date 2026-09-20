@@ -36,6 +36,11 @@ const config = {
     width: 800,
     height: 600,
     backgroundColor: '#1a1a2e',
+    // Scale the 800x600 canvas to fit phones/tablets; body flexbox handles centering
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.NO_CENTER
+    },
     physics: {
         default: 'arcade',
         arcade: {

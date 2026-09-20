@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Battle Royale - Kids Arcade</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -12,9 +12,13 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            height: 100dvh;
             overflow: hidden;
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
         }
-        canvas { display: block; }
+        canvas { display: block; touch-action: none; }
 
         .nav-link {
             position: fixed;
@@ -83,6 +87,7 @@
                 <li><strong>Mouse</strong> &mdash; Aim</li>
                 <li><strong>Left Click</strong> &mdash; Shoot</li>
                 <li><strong>1-4 Keys</strong> &mdash; Switch weapons</li>
+                <li><strong>Touch:</strong> D-pad to move, drag <strong>FIRE</strong> to aim &amp; shoot, <strong>SWAP</strong> to change weapon</li>
                 <li><strong>Walk over items</strong> &mdash; Pick up weapons &amp; health</li>
             </ul>
             <p class="goal">Be the last one standing! Avoid the shrinking storm and eliminate 15 bots to win.</p>
