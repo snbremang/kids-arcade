@@ -78,7 +78,7 @@ export const WEAPONS = {
     sniper: {
         name: 'Sniper Rifle',
         fireRate: 1500,
-        damage: 70,
+        damage: 50,
         bulletSpeed: 1200,
         bulletLifespan: 1000,
         spread: 0.01,

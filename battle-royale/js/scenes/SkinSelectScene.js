@@ -42,22 +42,28 @@ export class SkinSelectScene extends Phaser.Scene {
             bg.lineStyle(2, borderColor, 1);
             bg.strokeRoundedRect(x - cellW / 2 + 8, y - 10, cellW - 16, cellH - 10, 6);
 
+            // Vertical rhythm within the card: name -> sprite/icon -> status line,
+            // padded off the box's top edge so nothing touches the name above it.
+            const boxTop = y - 10;
+            const nameY = boxTop + 16;
+            const previewY = nameY + 33;
+
             // Skin preview (character sprite or lock icon)
             if (isUnlocked) {
-                const sprite = this.add.sprite(x, y + 15, SPRITE_SHEET_KEY, frameKey(skin.id, 'pistol'));
+                // Name
+                this.add.text(x, nameY, skin.name, {
+                    fontSize: '12px', fontFamily: 'Arial', color: '#ecf0f1'
+                }).setOrigin(0.5);
+
+                const sprite = this.add.sprite(x, previewY, SPRITE_SHEET_KEY, frameKey(skin.id, 'pistol'));
                 const previewScale = 46 / sprite.frame.height;
                 sprite.setScale(previewScale);
 
                 if (isSelected) {
-                    this.add.text(x, y + 45, 'EQUIPPED', {
+                    this.add.text(x, previewY + 35, 'EQUIPPED', {
                         fontSize: '11px', fontFamily: 'Arial', color: '#2ecc71'
                     }).setOrigin(0.5);
                 }
-
-                // Name
-                this.add.text(x, y - 2, skin.name, {
-                    fontSize: '12px', fontFamily: 'Arial', color: '#ecf0f1'
-                }).setOrigin(0.5);
 
                 // Click to select
                 if (!isSelected) {
@@ -70,15 +76,15 @@ export class SkinSelectScene extends Phaser.Scene {
                 }
             } else {
                 // Locked
-                this.add.text(x, y + 5, '🔒', {
-                    fontSize: '24px'
-                }).setOrigin(0.5);
-
-                this.add.text(x, y - 5, skin.name, {
+                this.add.text(x, nameY, skin.name, {
                     fontSize: '12px', fontFamily: 'Arial', color: '#666666'
                 }).setOrigin(0.5);
 
-                this.add.text(x, y + 40, skin.condition.label, {
+                this.add.text(x, previewY, '🔒', {
+                    fontSize: '24px'
+                }).setOrigin(0.5);
+
+                this.add.text(x, previewY + 35, skin.condition.label, {
                     fontSize: '9px', fontFamily: 'Arial', color: '#888888'
                 }).setOrigin(0.5);
             }
