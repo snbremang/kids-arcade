@@ -1,9 +1,11 @@
 import { PLAYER } from '../constants.js';
 import { WeaponSystem } from '../systems/WeaponSystem.js';
+import { SPRITE_SHEET_KEY, frameKey, applySkinFrame } from '../data/SpriteAtlas.js';
+import { applyFacing } from '../utils.js';
 
 export class Player extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, skinId) {
-        super(scene, x, y, `player_${skinId}`);
+        super(scene, x, y, SPRITE_SHEET_KEY, frameKey(skinId, 'pistol'));
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -11,8 +13,8 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         this.setDepth(5);
         this.setCollideWorldBounds(true);
 
-        // Circular body
-        this.body.setCircle(PLAYER.BODY_RADIUS, PLAYER.SIZE / 2 - PLAYER.BODY_RADIUS, PLAYER.SIZE / 2 - PLAYER.BODY_RADIUS);
+        // Texture frame + scale + physics circle, keyed to the chosen skin and held weapon
+        applySkinFrame(this, skinId, 'pistol');
 
         this.health = PLAYER.MAX_HEALTH;
         this.maxHealth = PLAYER.MAX_HEALTH;
@@ -92,7 +94,7 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
             const worldPoint = this.scene.cameras.main.getWorldPoint(pointer.x, pointer.y);
             angle = Phaser.Math.Angle.Between(this.x, this.y, worldPoint.x, worldPoint.y);
         }
-        this.setRotation(angle);
+        applyFacing(this, angle);
 
         // Weapon switching with number keys
         if (Phaser.Input.Keyboard.JustDown(this.keys.one)) this.weaponSystem.switchToWeapon('pistol');
@@ -101,6 +103,11 @@ export class Player extends Phaser.Physics.Arcade.Sprite {
         if (Phaser.Input.Keyboard.JustDown(this.keys.four)) this.weaponSystem.switchToWeapon('sniper');
         if (Phaser.Input.Keyboard.JustDown(this.keys.q)) this.weaponSystem.switchWeapon(-1);
         if (Phaser.Input.Keyboard.JustDown(this.keys.e)) this.weaponSystem.switchWeapon(1);
+
+        // Sprite follows whichever weapon is currently equipped
+        if (this.weaponSystem.currentWeapon !== this.weaponFrame) {
+            applySkinFrame(this, this.skinId, this.weaponSystem.currentWeapon);
+        }
 
         // Auto-fire while holding mouse or the touch FIRE button
         if (tc && tc.firing) {

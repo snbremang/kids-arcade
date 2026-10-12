@@ -1,9 +1,14 @@
 import { SKINS, COLORS, WEAPONS, MAP } from '../constants.js';
 import { ProgressionManager } from '../data/ProgressionManager.js';
+import { SPRITE_SHEET_KEY, SPRITE_FRAMES, frameKey } from '../data/SpriteAtlas.js';
 
 export class BootScene extends Phaser.Scene {
     constructor() {
         super('BootScene');
+    }
+
+    preload() {
+        this.load.image(SPRITE_SHEET_KEY, 'js/assets/battle_royale_game_sprites.PNG');
     }
 
     create() {
@@ -26,14 +31,15 @@ export class BootScene extends Phaser.Scene {
             return;
         }
 
-        // Player skins
+        // Register one named frame per skin x weapon from the loaded sprite sheet.
+        // Players and bots both draw from these; which skin they use is decided at spawn time.
+        const sheet = this.textures.get(SPRITE_SHEET_KEY);
         for (const skin of SKINS) {
-            this.createCharacterTexture(`player_${skin.id}`, skin.color);
-        }
-
-        // Bot textures
-        for (let i = 0; i < COLORS.BOT_COLORS.length; i++) {
-            this.createCharacterTexture(`bot_${i}`, COLORS.BOT_COLORS[i]);
+            const frames = SPRITE_FRAMES[skin.id];
+            for (const weaponKey of Object.keys(frames)) {
+                const rect = frames[weaponKey];
+                sheet.add(frameKey(skin.id, weaponKey), 0, rect.x, rect.y, rect.w, rect.h);
+            }
         }
 
         // Bullet textures per weapon
@@ -77,29 +83,5 @@ export class BootScene extends Phaser.Scene {
         cross.lineBetween(18, 12, 24, 12);
         cross.generateTexture('crosshair', 24, 24);
         cross.destroy();
-    }
-
-    createCharacterTexture(key, color) {
-        const size = 32;
-        const g = this.add.graphics();
-
-        // Body circle
-        g.fillStyle(color, 1);
-        g.fillCircle(size / 2, size / 2, 12);
-
-        // Outline
-        g.lineStyle(2, 0x000000, 0.5);
-        g.strokeCircle(size / 2, size / 2, 12);
-
-        // Direction indicator (triangle pointing right)
-        g.fillStyle(0x000000, 0.6);
-        g.fillTriangle(
-            size / 2 + 14, size / 2,
-            size / 2 + 6, size / 2 - 5,
-            size / 2 + 6, size / 2 + 5
-        );
-
-        g.generateTexture(key, size, size);
-        g.destroy();
     }
 }

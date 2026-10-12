@@ -33,3 +33,16 @@ export function normalize(vx, vy) {
     if (len === 0) return { x: 0, y: 0 };
     return { x: vx / len, y: vy / len };
 }
+
+// Point a side-view character sprite at `angle` without ever turning it upside-down:
+// rotate within the right-facing half, and mirror (flipX) for the left-facing half.
+export function applyFacing(sprite, angle) {
+    const HALF_PI = Math.PI / 2;
+    if (angle > HALF_PI || angle < -HALF_PI) {
+        sprite.setFlipX(true);
+        sprite.setRotation(Math.PI - angle);
+    } else {
+        sprite.setFlipX(false);
+        sprite.setRotation(angle);
+    }
+}

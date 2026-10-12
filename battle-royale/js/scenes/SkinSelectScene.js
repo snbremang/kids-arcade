@@ -1,4 +1,5 @@
 import { SKINS } from '../constants.js';
+import { SPRITE_SHEET_KEY, frameKey } from '../data/SpriteAtlas.js';
 
 export class SkinSelectScene extends Phaser.Scene {
     constructor() {
@@ -43,7 +44,9 @@ export class SkinSelectScene extends Phaser.Scene {
 
             // Skin preview (character sprite or lock icon)
             if (isUnlocked) {
-                const sprite = this.add.sprite(x, y + 15, `player_${skin.id}`).setScale(1.5);
+                const sprite = this.add.sprite(x, y + 15, SPRITE_SHEET_KEY, frameKey(skin.id, 'pistol'));
+                const previewScale = 46 / sprite.frame.height;
+                sprite.setScale(previewScale);
 
                 if (isSelected) {
                     this.add.text(x, y + 45, 'EQUIPPED', {

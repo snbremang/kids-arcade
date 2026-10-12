@@ -1,4 +1,5 @@
 import { touchControlsEnabled, setTouchControls } from '../systems/Settings.js';
+import { SPRITE_SHEET_KEY, frameKey } from '../data/SpriteAtlas.js';
 
 export class MainMenuScene extends Phaser.Scene {
     constructor() {
@@ -27,7 +28,8 @@ export class MainMenuScene extends Phaser.Scene {
         // Player skin preview
         const progression = this.registry.get('progression');
         const skinId = progression.data.selectedSkin;
-        this.add.sprite(width / 2, height / 4 + 95, `player_${skinId}`).setScale(2);
+        const titleSprite = this.add.sprite(width / 2, height / 4 + 95, SPRITE_SHEET_KEY, frameKey(skinId, 'pistol'));
+        titleSprite.setScale(60 / titleSprite.frame.height);
 
         // Buttons
         const btnStart = height / 2 + 20;

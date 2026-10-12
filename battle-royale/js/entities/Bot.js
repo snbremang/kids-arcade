@@ -1,6 +1,8 @@
-import { PLAYER, BOT, COLORS } from '../constants.js';
+import { PLAYER, BOT, SKINS } from '../constants.js';
 import { WeaponSystem } from '../systems/WeaponSystem.js';
 import { AIStateMachine } from '../systems/AIStateMachine.js';
+import { SPRITE_SHEET_KEY, frameKey, applySkinFrame } from '../data/SpriteAtlas.js';
+import { randomFromArray } from '../utils.js';
 
 const BOT_NAMES = [
     'Shadow', 'Blaze', 'Frost', 'Viper', 'Storm',
@@ -10,7 +12,12 @@ const BOT_NAMES = [
 
 export class Bot extends Phaser.Physics.Arcade.Sprite {
     constructor(scene, x, y, index) {
-        super(scene, x, y, `bot_${index % COLORS.BOT_COLORS.length}`);
+        // Random skin per bot, never the one the player is wearing
+        const playerSkinId = scene.player ? scene.player.skinId : null;
+        const pool = SKINS.filter(s => s.id !== playerSkinId);
+        const skinId = randomFromArray(pool.length ? pool : SKINS).id;
+
+        super(scene, x, y, SPRITE_SHEET_KEY, frameKey(skinId, 'pistol'));
 
         scene.add.existing(this);
         scene.physics.add.existing(this);
@@ -18,8 +25,8 @@ export class Bot extends Phaser.Physics.Arcade.Sprite {
         this.setDepth(4);
         this.setCollideWorldBounds(true);
 
-        // Circular body
-        this.body.setCircle(PLAYER.BODY_RADIUS, PLAYER.SIZE / 2 - PLAYER.BODY_RADIUS, PLAYER.SIZE / 2 - PLAYER.BODY_RADIUS);
+        // Texture frame + scale + physics circle, keyed to the chosen skin and held weapon
+        applySkinFrame(this, skinId, 'pistol');
 
         this.health = PLAYER.MAX_HEALTH;
         this.maxHealth = PLAYER.MAX_HEALTH;
@@ -55,6 +62,11 @@ export class Bot extends Phaser.Physics.Arcade.Sprite {
     update(time, delta) {
         if (!this.active || !this.body) return;
         this.ai.update(time, delta);
+
+        // Sprite follows whichever weapon is currently equipped
+        if (this.weaponSystem.currentWeapon !== this.weaponFrame) {
+            applySkinFrame(this, this.skinId, this.weaponSystem.currentWeapon);
+        }
     }
 
     // Health bars are now drawn by a shared Graphics in GameScene

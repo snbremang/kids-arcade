@@ -1,5 +1,5 @@
 import { BOT, MAP } from '../constants.js';
-import { distance, randomInt, randomFloat } from '../utils.js';
+import { distance, randomInt, randomFloat, applyFacing } from '../utils.js';
 
 const STATES = {
     IDLE: 'IDLE',
@@ -261,7 +261,7 @@ export class AIStateMachine {
 
         // Face target
         const angle = Phaser.Math.Angle.Between(this.bot.x, this.bot.y, this.target.x, this.target.y);
-        this.bot.setRotation(angle);
+        applyFacing(this.bot, angle);
 
         // Reaction delay
         if (this.reactionTimer > 0) {
@@ -313,7 +313,7 @@ export class AIStateMachine {
                 Math.cos(angle) * BOT.FLEE_SPEED,
                 Math.sin(angle) * BOT.FLEE_SPEED
             );
-            this.bot.setRotation(angle);
+            applyFacing(this.bot, angle);
         } else {
             this.setRandomWanderTarget();
             this.transition(STATES.WANDER);
@@ -330,7 +330,7 @@ export class AIStateMachine {
             Math.cos(angle) * BOT.CHASE_SPEED,
             Math.sin(angle) * BOT.CHASE_SPEED
         );
-        this.bot.setRotation(angle);
+        applyFacing(this.bot, angle);
     }
 
     // Helpers
@@ -341,7 +341,7 @@ export class AIStateMachine {
             Math.cos(angle) * speed,
             Math.sin(angle) * speed
         );
-        this.bot.setRotation(angle);
+        applyFacing(this.bot, angle);
     }
 
     setRandomWanderTarget() {

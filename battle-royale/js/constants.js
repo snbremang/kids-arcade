@@ -119,12 +119,16 @@ export const SKINS = [
     { id: 'gold',          name: 'Champion Gold',  color: 0xf1c40f, unlocked: false, condition: { type: 'wins', value: 1, label: 'Win a match' } },
     { id: 'purple',        name: 'Royal',          color: 0x9b59b6, unlocked: false, condition: { type: 'kills_total', value: 30, label: 'Get 30 total kills' } },
     { id: 'white',         name: 'Ghost',          color: 0xecf0f1, unlocked: false, condition: { type: 'games_played', value: 10, label: 'Play 10 matches' } },
-    { id: 'orange',        name: 'Blaze',          color: 0xe67e22, unlocked: false, condition: { type: 'kills_single', value: 8, label: 'Get 8 kills in one match' } },
+    { id: 'orange',        name: 'Blaze',          color: 0x1a1a1a, unlocked: false, condition: { type: 'kills_single', value: 8, label: 'Get 8 kills in one match' } },
     { id: 'cyan',          name: 'Neon',           color: 0x00bcd4, unlocked: false, condition: { type: 'wins', value: 5, label: 'Win 5 matches' } },
     { id: 'pink',          name: 'Bubblegum',      color: 0xff69b4, unlocked: false, condition: { type: 'games_played', value: 20, label: 'Play 20 matches' } },
     { id: 'black',         name: 'Shadow',         color: 0x2c3e50, unlocked: false, condition: { type: 'wins', value: 10, label: 'Win 10 matches' } },
-    { id: 'rainbow',       name: 'Prismatic',      color: 0xff0000, unlocked: false, condition: { type: 'kills_total', value: 100, label: 'Get 100 total kills' } }
+    { id: 'rainbow',       name: 'Rainbow',        color: 0xff0000, unlocked: false, condition: { type: 'kills_total', value: 100, label: 'Get 100 total kills' } }
 ];
+
+// Visual height (px) every skin sprite is scaled to, regardless of its source frame
+// size, so all skins read as the same size in-game. Physics body stays PLAYER.BODY_RADIUS.
+export const SPRITE_DISPLAY_HEIGHT = 44;
 
 export const COLORS = {
     GROUND: 0x2d5a27,
