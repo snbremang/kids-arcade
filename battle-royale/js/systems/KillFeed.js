@@ -10,16 +10,24 @@ export class KillFeed {
         this.container.setScrollFactor(0);
     }
 
-    addKill(killerName, victimName) {
+    // highlightColor (optional): a 0xRRGGBB skin color, tinted into the entry's
+    // background so your own kills stand out from everyone else's in the feed.
+    addKill(killerName, victimName, highlightColor = null) {
         const { width } = this.scene.scale;
 
-        const text = this.scene.add.text(width - 10, 0, `${killerName} eliminated ${victimName}`, {
+        const style = {
             fontSize: '13px',
             fontFamily: 'Arial',
             color: '#ffffff',
-            backgroundColor: '#00000088',
+            backgroundColor: highlightColor != null ? this.toRgba(highlightColor, 0.65) : '#00000088',
             padding: { x: 8, y: 4 }
-        }).setOrigin(1, 0);
+        };
+        if (highlightColor != null) {
+            style.stroke = '#000000';
+            style.strokeThickness = 2;
+        }
+
+        const text = this.scene.add.text(width - 10, 0, `${killerName} eliminated ${victimName}`, style).setOrigin(1, 0);
 
         const entry = {
             text,
@@ -48,8 +56,15 @@ export class KillFeed {
         });
     }
 
+    toRgba(hexColor, alpha) {
+        const r = (hexColor >> 16) & 0xff;
+        const g = (hexColor >> 8) & 0xff;
+        const b = hexColor & 0xff;
+        return `rgba(${r},${g},${b},${alpha})`;
+    }
+
     repositionEntries() {
-        const startY = 60;
+        const startY = 85; // below the HUD's Kills/Alive text and the touch-controls toggle button
         this.entries.forEach((entry, i) => {
             entry.text.setY(startY + i * 26);
         });

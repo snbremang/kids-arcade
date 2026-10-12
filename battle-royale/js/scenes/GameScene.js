@@ -1,4 +1,4 @@
-import { MAP, PLAYER, BOT, WEAPONS, PICKUPS } from '../constants.js';
+import { MAP, PLAYER, BOT, WEAPONS, PICKUPS, SKINS } from '../constants.js';
 import { Player } from '../entities/Player.js';
 import { Bot } from '../entities/Bot.js';
 import { Bullet } from '../entities/Bullet.js';
@@ -205,6 +205,11 @@ export class GameScene extends Phaser.Scene {
         }
     }
 
+    getPlayerSkinColor() {
+        const skin = SKINS.find(s => s.id === this.player.skinId);
+        return skin ? skin.color : null;
+    }
+
     getSpawnPoint() {
         const idx = Phaser.Math.Between(0, this.openTiles.length - 1);
         const tile = this.openTiles[idx];
@@ -232,6 +237,16 @@ export class GameScene extends Phaser.Scene {
         if (!entity.takeDamage) return; // Safety: not a damageable entity
         if (bullet.owner === entity) return;
 
+        // entity.active stays true for the ~300ms death fade tween, so a multi-pellet
+        // shotgun blast (or another bullet already in flight) can land several more
+        // hits on the same target in the same/next frame before that tween finishes -
+        // each one re-triggering onEntityDeath and over-counting the kill. Once a
+        // target is dying, consume the bullet but don't process it again.
+        if (entity.isDead) {
+            bullet.deactivate();
+            return;
+        }
+
         entity.takeDamage(bullet.damage, bullet.owner);
         bullet.deactivate();
 
@@ -251,6 +266,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     onEntityDeath(entity, killer, weaponKey) {
+        entity.isDead = true;
         const killerName = killer === this.player ? 'You' : (killer ? killer.botName || 'Storm' : 'Storm');
         const victimName = entity === this.player ? 'You' : entity.botName || 'Unknown';
 
@@ -264,7 +280,9 @@ export class GameScene extends Phaser.Scene {
             };
         }
 
-        this.killFeed.addKill(killerName, victimName);
+        // Highlight the feed entry in the player's own skin color when it's their kill
+        const highlightColor = killer === this.player ? this.getPlayerSkinColor() : null;
+        this.killFeed.addKill(killerName, victimName, highlightColor);
 
         const idx = this.aliveEntities.indexOf(entity);
         if (idx !== -1) this.aliveEntities.splice(idx, 1);
@@ -320,7 +338,7 @@ export class GameScene extends Phaser.Scene {
 
         for (let i = this.aliveEntities.length - 1; i >= 0; i--) {
             const entity = this.aliveEntities[i];
-            if (!entity.active) continue;
+            if (!entity.active || entity.isDead) continue;
             const dist = Phaser.Math.Distance.Between(
                 entity.x, entity.y,
                 storm.zone.centerX, storm.zone.centerY
@@ -336,6 +354,7 @@ export class GameScene extends Phaser.Scene {
     }
 
     onStormKill(entity) {
+        entity.isDead = true;
         if (entity === this.player) {
             this.playerKilledBy = { killerName: 'The Storm', killerColorIndex: -1, weaponKey: null, cause: 'storm' };
         }
