@@ -359,11 +359,22 @@ export class GameScene extends Phaser.Scene {
     }
 
     checkGameEnd() {
+        // aliveEntities already has the dead removed as soon as they die (see
+        // onEntityDeath/onStormKill) - don't also gate on entity.active, which
+        // stays true for up to 300ms into the death fade-out tween.
         const alivePlayers = this.aliveEntities.filter(e => e.active);
-        if (alivePlayers.length <= 1 || !this.player.active) {
+        const playerAlive = alivePlayers.includes(this.player);
+
+        // The match ends the moment the player is gone - win or lose - not just
+        // when the field is down to one entity. Checking playerAlive separately
+        // (rather than relying on this.player.active, which lags the kill by the
+        // 300ms fade tween) also fixes a prior bug: a bot's killing blow in the
+        // final 1v1 could register as a win, because the sole entity left in
+        // aliveEntities was the bot, but this.player.active hadn't flipped false yet.
+        if (!playerAlive || alivePlayers.length <= 1) {
             this.gameOver = true;
             this.input.setDefaultCursor('default');
-            const won = this.player.active && alivePlayers.length === 1;
+            const won = playerAlive && alivePlayers.length === 1;
             const survivalTime = Math.floor((this.time.now - this.startTime) / 1000);
 
             this.time.delayedCall(1000, () => {

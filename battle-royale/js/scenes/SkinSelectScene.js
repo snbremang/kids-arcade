@@ -21,7 +21,7 @@ export class SkinSelectScene extends Phaser.Scene {
         // Grid layout
         const cols = 4;
         const cellW = 160;
-        const cellH = 120;
+        const cellH = 130; // tall enough for name + sprite + unlock reason (+ EQUIPPED)
         const startX = (width - cols * cellW) / 2 + cellW / 2;
         const startY = 100;
 
@@ -59,8 +59,15 @@ export class SkinSelectScene extends Phaser.Scene {
                 const previewScale = 46 / sprite.frame.height;
                 sprite.setScale(previewScale);
 
+                // Why this skin unlocked, so it's still visible after the fact
+                if (skin.condition) {
+                    this.add.text(x, previewY + 34, skin.condition.label, {
+                        fontSize: '9px', fontFamily: 'Arial', color: '#888888'
+                    }).setOrigin(0.5);
+                }
+
                 if (isSelected) {
-                    this.add.text(x, previewY + 35, 'EQUIPPED', {
+                    this.add.text(x, previewY + (skin.condition ? 49 : 35), 'EQUIPPED', {
                         fontSize: '11px', fontFamily: 'Arial', color: '#2ecc71'
                     }).setOrigin(0.5);
                 }
@@ -84,7 +91,7 @@ export class SkinSelectScene extends Phaser.Scene {
                     fontSize: '24px'
                 }).setOrigin(0.5);
 
-                this.add.text(x, previewY + 35, skin.condition.label, {
+                this.add.text(x, previewY + 34, skin.condition.label, {
                     fontSize: '9px', fontFamily: 'Arial', color: '#888888'
                 }).setOrigin(0.5);
             }

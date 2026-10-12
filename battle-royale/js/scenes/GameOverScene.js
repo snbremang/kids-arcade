@@ -107,17 +107,29 @@ export class GameOverScene extends Phaser.Scene {
                 color: '#2ecc71'
             }).setOrigin(0.5);
 
+            const unlockItemH = 46;
             newUnlocks.forEach((skin, i) => {
-                this.add.text(width / 2, unlockY + 35 + i * 28, `${skin.name}`, {
+                const itemY = unlockY + 35 + i * unlockItemH;
+                this.add.text(width / 2, itemY, skin.name, {
                     fontSize: '18px',
                     fontFamily: 'Arial',
                     color: '#f1c40f'
                 }).setOrigin(0.5);
+
+                // Why it unlocked, e.g. "Get 8 kills in one match"
+                if (skin.condition) {
+                    this.add.text(width / 2, itemY + 20, skin.condition.label, {
+                        fontSize: '12px',
+                        fontFamily: 'Arial',
+                        color: '#bdc3c7'
+                    }).setOrigin(0.5);
+                }
             });
         }
 
         // Buttons
-        const btnY = newUnlocks.length > 0 ? unlockY + 80 : statsY + 210;
+        const unlocksHeight = newUnlocks.length > 0 ? 95 + (newUnlocks.length - 1) * 46 : 0;
+        const btnY = newUnlocks.length > 0 ? unlockY + unlocksHeight : statsY + 210;
 
         this.createButton(width / 2, btnY, 'PLAY AGAIN', () => {
             this.scene.start('GameScene');
